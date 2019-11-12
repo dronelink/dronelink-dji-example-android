@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Dronelink Example</string>
+    <string name="mapbox_access_token">INSERT_YOUR_MAPBOX_ACCESS_TOKEN_HERE</string>
+</resources>
