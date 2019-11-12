@@ -10,11 +10,11 @@ android {
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
-        applicationId "com.dronelink.sdk.missionexample"
+        applicationId "com.dronelink.example"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
