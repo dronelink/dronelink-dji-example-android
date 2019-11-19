@@ -20,11 +20,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.dronelink.core.CameraFile;
 import com.dronelink.core.DroneSession;
 import com.dronelink.core.DroneSessionManager;
 import com.dronelink.core.Dronelink;
 import com.dronelink.core.MissionExecutor;
-import com.dronelink.core.User;
 import com.dronelink.core.mission.command.Command;
 import com.dronelink.core.mission.core.Message;
 import com.dronelink.dji.DJIDroneSessionManager;
@@ -73,7 +73,15 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
         Dronelink.getInstance().getSessionManager().addListener(this);
         Dronelink.getInstance().register("INSERT YOUR ENVIRONMENT KEY HERE", null);
-        Dronelink.getInstance().installKernel(loadAssetTextAsString("dronelink-kernel.js"));
+        try {
+            Dronelink.getInstance().installKernel(loadAssetTextAsString("dronelink-kernel.js"));
+        }
+        catch (final Dronelink.KernelInvalidException e) {
+            Log.e(TAG, "Dronelink Kernel Invalid");
+        }
+        catch (final Dronelink.KernelIncompatibleException e) {
+            Log.e(TAG, "Dronelink Kernel Incompatible");
+        }
     }
 
     private void checkAndRequestPermissions() {
@@ -130,7 +138,9 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
 
                 @Override
                 public void onMissionDisengaged(final MissionExecutor executor, final MissionExecutor.Engagement engagement, final Message reason) {
-                    showToast(reason.toString());
+                    //save mission to back-end using: executor.getMissionSerialized()
+                    //get asset manifest using: executor.getAssetManifestSerialized()
+                    //load mission later using Dronelink.getInstance().loadMission(...
                 }
             });
         }
@@ -205,4 +215,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
 
     @Override
     public void onCommandFinished(final DroneSession session, final Command command, final String error) {}
+
+    @Override
+    public void onCameraFileGenerated(final DroneSession session, final CameraFile file) {}
 }
