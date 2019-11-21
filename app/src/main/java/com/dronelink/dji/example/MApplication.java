@@ -1,10 +1,10 @@
 //  MainActivity.java
-//  DronelinkExample
+//  DronelinkDJIExample
 //
 //  Created by Jim McAndrew on 11/7/19.
 //  Copyright © 2019 Dronelink. All rights reserved.
 //
-package com.dronelink.example;
+package com.dronelink.dji.example;
 
 import android.app.Application;
 import android.content.Context;

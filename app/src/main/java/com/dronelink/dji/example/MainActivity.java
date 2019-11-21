@@ -1,10 +1,10 @@
 //  MainActivity.java
-//  DronelinkExample
+//  DronelinkDJIExample
 //
 //  Created by Jim McAndrew on 11/7/19.
 //  Copyright © 2019 Dronelink. All rights reserved.
 //
-package com.dronelink.example;
+package com.dronelink.dji.example;
 
 import android.Manifest;
 import android.content.Intent;
@@ -28,6 +28,7 @@ import com.dronelink.core.MissionExecutor;
 import com.dronelink.core.mission.command.Command;
 import com.dronelink.core.mission.core.Message;
 import com.dronelink.dji.DJIDroneSessionManager;
+import com.dronelink.dji.example.R;
 import com.dronelink.dji.ui.DJIDashboardActivity;
 import com.mapbox.mapboxsdk.Mapbox;
 
@@ -72,7 +73,8 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
 
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
         Dronelink.getInstance().getSessionManager().addListener(this);
-        Dronelink.getInstance().register("INSERT YOUR ENVIRONMENT KEY HERE", null);
+        Dronelink.getInstance().enableDevelopmentServer();
+        Dronelink.getInstance().register("mYf4WVO0C7nqEuiJjnVv", null);
         try {
             Dronelink.getInstance().installKernel(loadAssetTextAsString("dronelink-kernel.js"));
         }

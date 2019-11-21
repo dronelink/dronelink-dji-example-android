@@ -10,7 +10,7 @@ android {
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
-        applicationId "com.dronelink.example"
+        applicationId "com.dronelink.dji.example"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
@@ -84,8 +84,8 @@ dependencies {
         exclude module: 'library-anti-distortion'
         exclude module: 'fly-safe-database'
     })
-    compileOnly 'com.dji:dji-sdk-provided:4.11'
-    implementation('com.dji:dji-uxsdk:4.11', {
+    compileOnly 'com.dji:dji-sdk-provided:4.11.1'
+    implementation('com.dji:dji-uxsdk:4.11.1', {
         exclude group: 'com.google.android.gms'
     })
 }
