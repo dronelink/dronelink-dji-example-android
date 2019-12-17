@@ -14,6 +14,7 @@
 - Provide DJISDK key in AndroidManifest.xml
 - Provate Mapbox access token in strings.xml
 - Provide Dronelink environment key in MainActivity.java
+- Copy dronelink-kernel.js to app/src/main/assets
 
 ## Author
 
