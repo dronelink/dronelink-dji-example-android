@@ -126,7 +126,8 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
         try {
             Dronelink.getInstance().loadPlan(loadAssetTextAsString("plan.json"), false, Dronelink.getInstance().getSessionManager().getSession(), new MissionExecutor.Listener() {
                 @Override
-                public void onMissionEstimated(final MissionExecutor executor, final long durationMillis) {}
+                public void onMissionEstimated(final MissionExecutor executor, final long durationMillis) {
+                }
 
                 @Override
                 public void onMissionEngaged(final MissionExecutor executor, final MissionExecutor.Engagement engagement) {
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
 
                 @Override
                 public void onMissionDisengaged(final MissionExecutor executor, final MissionExecutor.Engagement engagement, final Message reason) {
-                    //save mission to back-end using: executor.getMissionSerialized()
+                    //save mission to back-end using: executor.getMissionSerializedAsync(...
                     //get asset manifest using: executor.getAssetManifestSerialized()
                     //load mission later using Dronelink.getInstance().loadMission(...
                 }
