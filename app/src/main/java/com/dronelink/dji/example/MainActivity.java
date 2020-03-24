@@ -20,12 +20,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.dronelink.core.AssetManifest;
 import com.dronelink.core.CameraFile;
 import com.dronelink.core.DroneSession;
 import com.dronelink.core.DroneSessionManager;
 import com.dronelink.core.Dronelink;
 import com.dronelink.core.MissionExecutor;
 import com.dronelink.core.mission.command.Command;
+import com.dronelink.core.mission.core.Descriptors;
 import com.dronelink.core.mission.core.Message;
 import com.dronelink.dji.DJIDroneSessionManager;
 import com.dronelink.dji.ui.DJIDashboardActivity;
@@ -64,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
 
     private List<String> missingPermission = new ArrayList<>();
 
+    private AssetManifest assetManifest;
+    private int assetIndex;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +80,15 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
         Dronelink.getInstance().register("INSERT YOUR ENVIRONMENT KEY HERE", null);
         try {
             Dronelink.getInstance().installKernel(loadAssetTextAsString("dronelink-kernel.js"));
+            assetManifest = Dronelink.getInstance().createAssetManifest("example", new String[]{"tag1", "tag2"});
+            final Descriptors descriptors = new Descriptors();
+            descriptors.name = "name";
+            descriptors.description = "description";
+            descriptors.tags = new String[]{"tag1", "tag2"};
+            assetIndex = assetManifest.addAsset("key", descriptors);
+        }
+        catch (final Dronelink.KernelUnavailableException e) {
+            Log.e(TAG, "Dronelink Kernel Unavailable");
         }
         catch (final Dronelink.KernelInvalidException e) {
             Log.e(TAG, "Dronelink Kernel Invalid");
@@ -218,5 +232,8 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
     public void onCommandFinished(final DroneSession session, final Command command, final String error) {}
 
     @Override
-    public void onCameraFileGenerated(final DroneSession session, final CameraFile file) {}
+    public void onCameraFileGenerated(final DroneSession session, final CameraFile file) {
+        assetManifest.addCameraFile(assetIndex, file);
+        //assetManifest.getSerialized() to get the manually tracked asset manifest json
+    }
 }
