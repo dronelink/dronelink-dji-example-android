@@ -25,7 +25,9 @@ import com.dronelink.core.CameraFile;
 import com.dronelink.core.DroneSession;
 import com.dronelink.core.DroneSessionManager;
 import com.dronelink.core.Dronelink;
+import com.dronelink.core.FuncExecutor;
 import com.dronelink.core.MissionExecutor;
+import com.dronelink.core.command.CommandError;
 import com.dronelink.core.mission.command.Command;
 import com.dronelink.core.mission.core.Descriptors;
 import com.dronelink.core.mission.core.Message;
@@ -40,7 +42,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements DroneSessionManager.Listener, DroneSession.Listener {
+public class MainActivity extends AppCompatActivity implements DroneSessionManager.Listener, DroneSession.Listener, MissionExecutor.Listener, FuncExecutor.Listener {
     private static final String TAG = MainActivity.class.getCanonicalName();
 
     private static final String[] REQUIRED_PERMISSION_LIST = new String[]{
@@ -79,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
         Dronelink.getInstance().getSessionManager().addListener(this);
         Dronelink.getInstance().register("INSERT YOUR ENVIRONMENT KEY HERE", null);
         try {
+            //use Dronelink.KernelVersionTarget to see the minimum compatible kernel version that the current core supports
             Dronelink.getInstance().installKernel(loadAssetTextAsString("dronelink-kernel.js"));
             assetManifest = Dronelink.getInstance().createAssetManifest("example", new String[]{"tag1", "tag2"});
             final Descriptors descriptors = new Descriptors();
@@ -136,40 +139,32 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
 
     public void onDashboard(View v) {
         startActivityIfNeeded(new Intent(getBaseContext(), DJIDashboardActivity.class), RequestCodes.DASHBOARD);
+        loadPlan();
+        //loadFunc();
+    }
 
+    private void loadPlan() {
         try {
-            Dronelink.getInstance().loadPlan(loadAssetTextAsString("plan.json"), false, Dronelink.getInstance().getSessionManager().getSession(), new MissionExecutor.Listener() {
-                @Override
-                public void onMissionEstimated(final MissionExecutor executor, final long durationMillis) {
-                }
-
-                @Override
-                public void onMissionEngaged(final MissionExecutor executor, final MissionExecutor.Engagement engagement) {
-                }
-
-                @Override
-                public void onMissionExecuted(final MissionExecutor executor, final MissionExecutor.Engagement engagement) {
-                }
-
-                @Override
-                public void onMissionDisengaged(final MissionExecutor executor, final MissionExecutor.Engagement engagement, final Message reason) {
-                    //save mission to back-end using: executor.getMissionSerializedAsync(...
-                    //get asset manifest using: executor.getAssetManifestSerialized()
-                    //load mission later using Dronelink.getInstance().loadMission(...
-                }
-            });
-        }
-        catch (final Dronelink.KernelUnavailableException e) {
+            Dronelink.getInstance().loadPlan(loadAssetTextAsString("plan.lz"), false, Dronelink.getInstance().getSessionManager().getSession(), this, (final String error) -> { Log.e(TAG, "Unable to read mission plan: " + error); });
+        } catch (final Dronelink.KernelUnavailableException e) {
             Log.e(TAG, "Dronelink Kernel Unavailable");
+        } catch (final Dronelink.UnregisteredException e) {
+            Log.e(TAG, "Dronelink SDK Unregistered");
         }
-        catch (final Dronelink.UnregisteredException e) {
+    }
+
+    private void loadFunc() {
+        try {
+            Dronelink.getInstance().loadFunc(loadAssetTextAsString("func.lz"), this);
+        } catch (final Dronelink.KernelUnavailableException e) {
+            Log.e(TAG, "Dronelink Kernel Unavailable");
+        } catch (final Dronelink.UnregisteredException e) {
             Log.e(TAG, "Dronelink SDK Unregistered");
         }
     }
 
     private void showToast(final String toastMsg) {
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.post(() -> Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_LONG).show());
+        new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_LONG).show());
     }
 
     private String loadAssetTextAsString(final String name) {
@@ -229,11 +224,44 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
     public void onCommandExecuted(final DroneSession session, final Command command) {}
 
     @Override
-    public void onCommandFinished(final DroneSession session, final Command command, final String error) {}
+    public void onCommandFinished(final DroneSession session, final Command command, final CommandError error) {}
 
     @Override
     public void onCameraFileGenerated(final DroneSession session, final CameraFile file) {
         assetManifest.addCameraFile(assetIndex, file);
         //assetManifest.getSerialized() to get the manually tracked asset manifest json
+    }
+
+    @Override
+    public void onMissionEstimating(final MissionExecutor executor) {}
+
+    @Override
+    public void onMissionEstimated(final MissionExecutor executor, final MissionExecutor.Estimate estimate) {}
+
+    @Override
+    public void onMissionEngaging(final MissionExecutor executor) {}
+
+    @Override
+    public void onMissionEngaged(final MissionExecutor executor, final MissionExecutor.Engagement engagement) {}
+
+    @Override
+    public void onMissionExecuted(final MissionExecutor executor, final MissionExecutor.Engagement engagement) {}
+
+    @Override
+    public void onMissionDisengaged(final MissionExecutor executor, final MissionExecutor.Engagement engagement, final Message reason) {
+        //save mission to back-end using: executor.getMissionSerializedAsync(...
+        //get asset manifest using: executor.getAssetManifestSerialized()
+        //load mission later using Dronelink.getInstance().loadMission(...
+    }
+
+    @Override
+    public void onFuncExecuted(final FuncExecutor executor) {
+        try {
+            Dronelink.getInstance().loadMission(executor.getMissionSerialized(), Dronelink.getInstance().getSessionManager().getSession(), this, (final String error) -> { Log.e(TAG, "Unable to read mission: " + error); });
+        } catch (final Dronelink.KernelUnavailableException e) {
+            Log.e(TAG, "Dronelink Kernel Unavailable");
+        } catch (final Dronelink.UnregisteredException e) {
+            Log.e(TAG, "Dronelink SDK Unregistered");
+        }
     }
 }
