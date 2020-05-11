@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
         private static final int DASHBOARD = 2;
     }
 
+    private static String MAP_CREDENTIALS_KEY = "INSERT YOUR CREDENTIALS KEY HERE";
+
     private List<String> missingPermission = new ArrayList<>();
 
     private AssetManifest assetManifest;
@@ -138,7 +140,9 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
     }
 
     public void onDashboard(View v) {
-        startActivityIfNeeded(new Intent(getBaseContext(), DJIDashboardActivity.class), RequestCodes.DASHBOARD);
+        final Intent intent = new Intent(getBaseContext(), DJIDashboardActivity.class);
+        intent.putExtra("mapCredentialsKey", MAP_CREDENTIALS_KEY);
+        startActivityIfNeeded(intent, RequestCodes.DASHBOARD);
         loadPlan();
         //loadFunc();
     }
@@ -155,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
 
     private void loadFunc() {
         try {
-            Dronelink.getInstance().loadFunc(loadAssetTextAsString("func.lz"), this);
+            Dronelink.getInstance().loadFunc(loadAssetTextAsString("func.lz"), this, (final String error) -> { Log.e(TAG, "Unable to read function: " + error); });
         } catch (final Dronelink.KernelUnavailableException e) {
             Log.e(TAG, "Dronelink Kernel Unavailable");
         } catch (final Dronelink.UnregisteredException e) {
