@@ -30,6 +30,7 @@
 
 ##---------------End: proguard configuration for Gson  ----------
 
+
 -keepattributes Exceptions,InnerClasses,*Annotation*,Signature,EnclosingMethod
 
 -dontoptimize

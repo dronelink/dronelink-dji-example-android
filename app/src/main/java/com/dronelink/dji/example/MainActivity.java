@@ -259,6 +259,9 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
     }
 
     @Override
+    public void onFuncInputsChanged(final FuncExecutor executor) {}
+
+    @Override
     public void onFuncExecuted(final FuncExecutor executor) {
         try {
             Dronelink.getInstance().loadMission(executor.getMissionSerialized(), Dronelink.getInstance().getSessionManager().getSession(), this, (final String error) -> { Log.e(TAG, "Unable to read mission: " + error); });
