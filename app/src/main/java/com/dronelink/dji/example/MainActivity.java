@@ -46,19 +46,14 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
     private static final String TAG = MainActivity.class.getCanonicalName();
 
     private static final String[] REQUIRED_PERMISSION_LIST = new String[]{
-        Manifest.permission.VIBRATE, // Gimbal rotation
-        Manifest.permission.INTERNET, // API requests
-        Manifest.permission.ACCESS_WIFI_STATE, // WIFI connected products
-        Manifest.permission.ACCESS_COARSE_LOCATION, // Maps
-        Manifest.permission.ACCESS_NETWORK_STATE, // WIFI connected products
-        Manifest.permission.ACCESS_FINE_LOCATION, // Maps
-        Manifest.permission.CHANGE_WIFI_STATE, // Changing between WIFI and USB connection
-        Manifest.permission.WRITE_EXTERNAL_STORAGE, // Log files
-        Manifest.permission.BLUETOOTH, // Bluetooth connected products
-        Manifest.permission.BLUETOOTH_ADMIN, // Bluetooth connected products
-        Manifest.permission.READ_EXTERNAL_STORAGE, // Log files
-        Manifest.permission.READ_PHONE_STATE, // Device UUID accessed upon registration
-        Manifest.permission.RECORD_AUDIO // Speaker accessory
+            Manifest.permission.VIBRATE,
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_WIFI_STATE,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.READ_PHONE_STATE
     };
 
     private class RequestCodes {
