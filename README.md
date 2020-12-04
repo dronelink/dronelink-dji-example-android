@@ -13,7 +13,8 @@
 
 - Update package to match what was registered with DJI in AndroidManifest.xml
 - Provide DJISDK key in AndroidManifest.xml
-- Provate Mapbox access token in strings.xml
+- Provide Mapbox public access token in strings.xml
+- Provide Mapbox secret access token in «USER_HOME»/.gradle/gradle.properties (https://docs.mapbox.com/android/maps/overview/)
 - Provide Dronelink environment key and Microsoft maps credentials key in MainActivity.java
 - Copy dronelink-kernel.js to app/src/main/assets
 

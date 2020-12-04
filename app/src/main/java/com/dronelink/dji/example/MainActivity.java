@@ -27,10 +27,11 @@ import com.dronelink.core.DroneSessionManager;
 import com.dronelink.core.Dronelink;
 import com.dronelink.core.FuncExecutor;
 import com.dronelink.core.MissionExecutor;
+import com.dronelink.core.ModeExecutor;
 import com.dronelink.core.command.CommandError;
-import com.dronelink.core.mission.command.Command;
-import com.dronelink.core.mission.core.Descriptors;
-import com.dronelink.core.mission.core.Message;
+import com.dronelink.core.kernel.command.Command;
+import com.dronelink.core.kernel.core.Descriptors;
+import com.dronelink.core.kernel.core.Message;
 import com.dronelink.dji.DJIDroneSessionManager;
 import com.dronelink.dji.ui.DJIDashboardActivity;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -42,7 +43,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements DroneSessionManager.Listener, DroneSession.Listener, MissionExecutor.Listener, FuncExecutor.Listener {
+public class MainActivity extends AppCompatActivity implements DroneSessionManager.Listener, DroneSession.Listener, MissionExecutor.Listener, FuncExecutor.Listener, ModeExecutor.Listener {
     private static final String TAG = MainActivity.class.getCanonicalName();
 
     private static final String[] REQUIRED_PERMISSION_LIST = new String[]{
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
             Manifest.permission.ACCESS_NETWORK_STATE,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_PHONE_STATE
     };
 
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         checkAndRequestPermissions();
         setContentView(R.layout.activity_main);
 
@@ -140,11 +143,12 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
         startActivityIfNeeded(intent, RequestCodes.DASHBOARD);
         loadPlan();
         //loadFunc();
+        //loadMode();
     }
 
     private void loadPlan() {
         try {
-            Dronelink.getInstance().loadPlan(loadAssetTextAsString("plan.lz"), false, Dronelink.getInstance().getSessionManager().getSession(), this, (final String error) -> { Log.e(TAG, "Unable to read mission plan: " + error); });
+            Dronelink.getInstance().loadPlan(loadAssetTextAsString("plan.dronelink"), false, Dronelink.getInstance().getSessionManager().getSession(), this, (final String error) -> { Log.e(TAG, "Unable to read mission plan: " + error); });
         } catch (final Dronelink.KernelUnavailableException e) {
             Log.e(TAG, "Dronelink Kernel Unavailable");
         } catch (final Dronelink.UnregisteredException e) {
@@ -154,7 +158,17 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
 
     private void loadFunc() {
         try {
-            Dronelink.getInstance().loadFunc(loadAssetTextAsString("func.lz"), this, (final String error) -> { Log.e(TAG, "Unable to read function: " + error); });
+            Dronelink.getInstance().loadFunc(loadAssetTextAsString("func.dronelink"), this, (final String error) -> { Log.e(TAG, "Unable to read function: " + error); });
+        } catch (final Dronelink.KernelUnavailableException e) {
+            Log.e(TAG, "Dronelink Kernel Unavailable");
+        } catch (final Dronelink.UnregisteredException e) {
+            Log.e(TAG, "Dronelink SDK Unregistered");
+        }
+    }
+
+    private void loadMode() {
+        try {
+            Dronelink.getInstance().loadMode(loadAssetTextAsString("func.dronelink"), this, (final String error) -> { Log.e(TAG, "Unable to read mode: " + error); });
         } catch (final Dronelink.KernelUnavailableException e) {
             Log.e(TAG, "Dronelink Kernel Unavailable");
         } catch (final Dronelink.UnregisteredException e) {
@@ -258,12 +272,38 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
 
     @Override
     public void onFuncExecuted(final FuncExecutor executor) {
+        final String type = executor.getExecutableType();
+        if (type == null) {
+            return;
+        }
+
         try {
-            Dronelink.getInstance().loadMission(executor.getMissionSerialized(), Dronelink.getInstance().getSessionManager().getSession(), this, (final String error) -> { Log.e(TAG, "Unable to read mission: " + error); });
+            if ("Mission".equals(type)) {
+                Dronelink.getInstance().loadMission(executor.getExecutableSerialized(), Dronelink.getInstance().getSessionManager().getSession(), this, (final String error) -> {
+                    Log.e(TAG, "Unable to read mission: " + error);
+                });
+            }
+            else if ("Mode".equals(type)) {
+                Dronelink.getInstance().loadMode(executor.getExecutableSerialized(), this, (final String error) -> {
+                    Log.e(TAG, "Unable to read mode: " + error);
+                });
+            }
         } catch (final Dronelink.KernelUnavailableException e) {
             Log.e(TAG, "Dronelink Kernel Unavailable");
         } catch (final Dronelink.UnregisteredException e) {
             Log.e(TAG, "Dronelink SDK Unregistered");
         }
     }
+
+    @Override
+    public void onModeEngaging(final ModeExecutor executor) {}
+
+    @Override
+    public void onModeEngaged(final ModeExecutor executor, final ModeExecutor.Engagement engagement) {}
+
+    @Override
+    public void onModeExecuted(final ModeExecutor executor, final ModeExecutor.Engagement engagement) {}
+
+    @Override
+    public void onModeDisengaged(final ModeExecutor executor, final ModeExecutor.Engagement engagement, final Message reason) {}
 }
