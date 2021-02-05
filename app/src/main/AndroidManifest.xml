@@ -50,6 +50,9 @@
         <activity android:name="com.dronelink.dji.ui.DJIDashboardActivity"
             android:screenOrientation="sensorLandscape">
         </activity>
+        <activity android:name="com.dronelink.core.ui.DashboardActivity"
+            android:screenOrientation="sensorLandscape">
+        </activity>
     </application>
 
 </manifest>

@@ -32,8 +32,9 @@ import com.dronelink.core.command.CommandError;
 import com.dronelink.core.kernel.command.Command;
 import com.dronelink.core.kernel.core.Descriptors;
 import com.dronelink.core.kernel.core.Message;
+import com.dronelink.core.ui.DashboardActivity;
+import com.dronelink.core.ui.DronelinkUI;
 import com.dronelink.dji.DJIDroneSessionManager;
-import com.dronelink.dji.ui.DJIDashboardActivity;
 import com.mapbox.mapboxsdk.Mapbox;
 
 import java.io.BufferedReader;
@@ -43,7 +44,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements DroneSessionManager.Listener, DroneSession.Listener, MissionExecutor.Listener, FuncExecutor.Listener, ModeExecutor.Listener {
+public class MainActivity extends AppCompatActivity implements DroneSessionManager.Listener, DroneSession.Listener, MissionExecutor.Listener, FuncExecutor.Listener, ModeExecutor.Listener, Dronelink.Listener {
     private static final String TAG = MainActivity.class.getCanonicalName();
 
     private static final String[] REQUIRED_PERMISSION_LIST = new String[]{
@@ -74,11 +75,16 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Dronelink.getInstance().addDroneSessionManager(new DJIDroneSessionManager(getBaseContext()));
+        //FIXME Dronelink.getInstance().addDroneSessionManager(new DJIUIDroneSessionManager(getBaseContext()));
+
         checkAndRequestPermissions();
         setContentView(R.layout.activity_main);
 
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
-        Dronelink.getInstance().getSessionManager().addListener(this);
+
+        DronelinkUI.initialize(this);
+        Dronelink.getInstance().addListener(this);
         Dronelink.getInstance().register("INSERT YOUR ENVIRONMENT KEY HERE", null);
         try {
             //use Dronelink.KernelVersionTarget to see the minimum compatible kernel version that the current core supports
@@ -109,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
         }
 
         if (missingPermission.isEmpty()) {
-            ((DJIDroneSessionManager)Dronelink.getInstance().getSessionManager()).register(getApplicationContext());
+            ((DJIDroneSessionManager)Dronelink.getInstance().getTargetDroneSessionManager()).register(getApplicationContext());
         }
         else {
             ActivityCompat.requestPermissions(this,
@@ -130,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
         }
 
         if (missingPermission.isEmpty()) {
-            ((DJIDroneSessionManager)Dronelink.getInstance().getSessionManager()).register(getApplicationContext());
+            ((DJIDroneSessionManager)Dronelink.getInstance().getTargetDroneSessionManager()).register(getApplicationContext());
         }
         else {
             showToast("Please check if the permission is granted.");
@@ -138,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
     }
 
     public void onDashboard(View v) {
-        final Intent intent = new Intent(getBaseContext(), DJIDashboardActivity.class);
+        final Intent intent = new Intent(getBaseContext(), DashboardActivity.class);
         intent.putExtra("mapCredentialsKey", MAP_CREDENTIALS_KEY);
         startActivityIfNeeded(intent, RequestCodes.DASHBOARD);
         loadPlan();
@@ -148,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
 
     private void loadPlan() {
         try {
-            Dronelink.getInstance().loadPlan(loadAssetTextAsString("plan.dronelink"), false, Dronelink.getInstance().getSessionManager().getSession(), this, (final String error) -> { Log.e(TAG, "Unable to read mission plan: " + error); });
+            Dronelink.getInstance().loadPlan(loadAssetTextAsString("plan.dronelink"), false, this, (final String error) -> { Log.e(TAG, "Unable to read mission plan: " + error); });
         } catch (final Dronelink.KernelUnavailableException e) {
             Log.e(TAG, "Dronelink Kernel Unavailable");
         } catch (final Dronelink.UnregisteredException e) {
@@ -211,6 +217,32 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
 
         return null;
     }
+
+    @Override
+    public void onRegistered(final String error) {}
+
+    @Override
+    public void onDroneSessionManagerAdded(final DroneSessionManager manager) {
+        manager.addListener(this);
+    }
+
+    @Override
+    public void onMissionLoaded(final MissionExecutor executor) {}
+
+    @Override
+    public void onMissionUnloaded(final MissionExecutor executor) {}
+
+    @Override
+    public void onFuncLoaded(final FuncExecutor executor) {}
+
+    @Override
+    public void onFuncUnloaded(final FuncExecutor executor) {}
+
+    @Override
+    public void onModeLoaded(final ModeExecutor executor) {}
+
+    @Override
+    public void onModeUnloaded(final ModeExecutor executor) {}
 
     @Override
     public void onOpened(final DroneSession session) {
@@ -279,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
 
         try {
             if ("Mission".equals(type)) {
-                Dronelink.getInstance().loadMission(executor.getExecutableSerialized(), Dronelink.getInstance().getSessionManager().getSession(), this, (final String error) -> {
+                Dronelink.getInstance().loadMission(executor.getExecutableSerialized(), this, (final String error) -> {
                     Log.e(TAG, "Unable to read mission: " + error);
                 });
             }

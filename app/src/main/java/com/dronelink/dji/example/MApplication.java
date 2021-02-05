@@ -12,6 +12,7 @@ import android.content.Context;
 import androidx.multidex.MultiDex;
 
 import com.dronelink.core.Dronelink;
+import com.dronelink.core.ui.DronelinkUI;
 import com.dronelink.dji.DJIDroneSessionManager;
 
 public class MApplication extends Application {
@@ -20,6 +21,6 @@ public class MApplication extends Application {
         super.attachBaseContext(base);
         MultiDex.install(this);
         com.secneo.sdk.Helper.install(this);
-        Dronelink.initialize(base, new DJIDroneSessionManager(base));
+        Dronelink.initialize(base);
     }
 }

@@ -1,5 +1,4 @@
 -keep class com.dronelink.** { *; }
--keep class org.liquidplayer.** { *; }
 
 ##---------------Begin: proguard configuration for Gson  ----------
 # Gson uses generic type information stored in a class file when working with fields. Proguard
@@ -144,3 +143,9 @@
 -keepclassmembers class android.arch.** { *; }
 -keep class android.arch.** { *; }
 -dontwarn android.arch.**
+
+
+#<------------ utmiss config start------------>
+-keep class dji.sdk.utmiss.** { *; }
+-keep class utmisslib.** { *; }
+#<------------ utmiss config end------------>
