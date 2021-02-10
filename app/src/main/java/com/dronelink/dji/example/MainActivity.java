@@ -32,6 +32,7 @@ import com.dronelink.core.command.CommandError;
 import com.dronelink.core.kernel.command.Command;
 import com.dronelink.core.kernel.core.Descriptors;
 import com.dronelink.core.kernel.core.Message;
+import com.dronelink.core.ui.DronelinkUI;
 import com.dronelink.dji.DJIDroneSessionManager;
 import com.dronelink.dji.ui.DJIDashboardActivity;
 import com.mapbox.mapboxsdk.Mapbox;
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
         setContentView(R.layout.activity_main);
 
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
+        DronelinkUI.initialize(this);
         Dronelink.getInstance().getSessionManager().addListener(this);
         Dronelink.getInstance().register("INSERT YOUR ENVIRONMENT KEY HERE", null);
         try {

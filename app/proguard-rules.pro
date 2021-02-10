@@ -1,5 +1,5 @@
 -keep class com.dronelink.** { *; }
--keep class org.liquidplayer.** { *; }
+-keep class com.eclipsesource.** { *; }
 
 ##---------------Begin: proguard configuration for Gson  ----------
 # Gson uses generic type information stored in a class file when working with fields. Proguard
@@ -110,6 +110,7 @@
     public void *(android.view.View);
 }
 -keep class androidx.** { *; }
+-keep class android.** {*;}
 -keep class android.media.** { *; }
 -keep class okio.** { *; }
 -keep class com.lmax.disruptor.** {
@@ -144,3 +145,4 @@
 -keepclassmembers class android.arch.** { *; }
 -keep class android.arch.** { *; }
 -dontwarn android.arch.**
+-ignorewarnings

@@ -12,6 +12,7 @@ import android.content.Context;
 import androidx.multidex.MultiDex;
 
 import com.dronelink.core.Dronelink;
+import com.dronelink.core.ui.DronelinkUI;
 import com.dronelink.dji.DJIDroneSessionManager;
 
 public class MApplication extends Application {
