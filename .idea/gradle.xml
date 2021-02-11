@@ -10,7 +10,7 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/../../private/dronelink-core-android/dronelink_core" />
+            <option value="$PROJECT_DIR$/../dronelink-core-android/dronelink_core" />
             <option value="$PROJECT_DIR$/../dronelink-core-ui-android/dronelink_core_ui" />
             <option value="$PROJECT_DIR$/../dronelink-dji-android/dronelink_dji" />
             <option value="$PROJECT_DIR$" />
@@ -19,6 +19,7 @@
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
+        <option name="useQualifiedModuleNames" value="true" />
       </GradleProjectSettings>
     </option>
   </component>

@@ -9,16 +9,17 @@ package com.dronelink.dji.example;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.dronelink.core.AssetManifest;
 import com.dronelink.core.CameraFile;
@@ -35,6 +36,7 @@ import com.dronelink.core.kernel.core.Message;
 import com.dronelink.core.ui.DashboardActivity;
 import com.dronelink.core.ui.DronelinkUI;
 import com.dronelink.dji.DJIDroneSessionManager;
+import com.dronelink.dji.ui.DJIUIDroneSessionManager;
 import com.mapbox.mapboxsdk.Mapbox;
 
 import java.io.BufferedReader;
@@ -75,8 +77,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Dronelink.getInstance().addDroneSessionManager(new DJIDroneSessionManager(getBaseContext()));
-        //FIXME Dronelink.getInstance().addDroneSessionManager(new DJIUIDroneSessionManager(getBaseContext()));
+        Dronelink.getInstance().addDroneSessionManager(new DJIUIDroneSessionManager(getBaseContext()));
 
         checkAndRequestPermissions();
         setContentView(R.layout.activity_main);
