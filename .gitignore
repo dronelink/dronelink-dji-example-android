@@ -40,3 +40,6 @@ captures/
 # misc
 *.DS_Store
 /gradle.properties
+
+# kernel
+app/src/main/assets/dronelink-kernel.js
