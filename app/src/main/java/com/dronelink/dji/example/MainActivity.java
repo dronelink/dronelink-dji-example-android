@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
 
     private void loadMode() {
         try {
-            Dronelink.getInstance().loadMode(loadAssetTextAsString("func.dronelink"), this, (final String error) -> { Log.e(TAG, "Unable to read mode: " + error); });
+            Dronelink.getInstance().loadMode(loadAssetTextAsString("mode.dronelink"), this, (final String error) -> { Log.e(TAG, "Unable to read mode: " + error); });
         } catch (final Dronelink.KernelUnavailableException e) {
             Log.e(TAG, "Dronelink Kernel Unavailable");
         } catch (final Dronelink.UnregisteredException e) {

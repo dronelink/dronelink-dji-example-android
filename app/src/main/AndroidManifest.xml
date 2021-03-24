@@ -47,6 +47,8 @@
                 android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"
                 android:resource="@xml/accessory_filter"/>
         </activity>
+        <activity android:name="com.dronelink.core.ui.EmbedActivity">
+        </activity>
         <activity android:name="com.dronelink.dji.ui.DJIDashboardActivity"
             android:screenOrientation="sensorLandscape">
         </activity>

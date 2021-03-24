@@ -110,7 +110,6 @@
     public void *(android.view.View);
 }
 -keep class androidx.** { *; }
--keep class android.** {*;}
 -keep class android.media.** { *; }
 -keep class okio.** { *; }
 -keep class com.lmax.disruptor.** {
@@ -145,4 +144,9 @@
 -keepclassmembers class android.arch.** { *; }
 -keep class android.arch.** { *; }
 -dontwarn android.arch.**
--ignorewarnings
+
+
+#<------------ utmiss config start------------>
+-keep class dji.sdk.utmiss.** { *; }
+-keep class utmisslib.** { *; }
+#<------------ utmiss config end------------>
