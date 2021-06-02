@@ -254,6 +254,9 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
     public void onMissionEstimated(final MissionExecutor executor, final MissionExecutor.Estimate estimate) {}
 
     @Override
+    public Message[] missionEngageDisallowedReasons(final MissionExecutor executor) { return null; }
+
+    @Override
     public void onMissionEngaging(final MissionExecutor executor) {}
 
     @Override
@@ -296,6 +299,9 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
             Log.e(TAG, "Dronelink SDK Unregistered");
         }
     }
+
+    @Override
+    public Message[] modeEngageDisallowedReasons(final ModeExecutor executor) { return null; }
 
     @Override
     public void onModeEngaging(final ModeExecutor executor) {}
