@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
 
     private void loadPlan() {
         try {
-            Dronelink.getInstance().loadPlan(loadAssetTextAsString("plan.dronelink"), false, Dronelink.getInstance().getSessionManager().getSession(), this, (final String error) -> { Log.e(TAG, "Unable to read mission plan: " + error); });
+            Dronelink.getInstance().loadPlan(loadAssetTextAsString("plan.dronelink"), false, this, (final String error) -> { Log.e(TAG, "Unable to read mission plan: " + error); });
         } catch (final Dronelink.KernelUnavailableException e) {
             Log.e(TAG, "Dronelink Kernel Unavailable");
         } catch (final Dronelink.UnregisteredException e) {
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
 
     private void loadFunc() {
         try {
-            Dronelink.getInstance().loadFunc(loadAssetTextAsString("func.dronelink"), this, (final String error) -> { Log.e(TAG, "Unable to read function: " + error); });
+            Dronelink.getInstance().loadFunc(loadAssetTextAsString("focus-distance-test.dronelink"), this, (final String error) -> { Log.e(TAG, "Unable to read function: " + error); });
         } catch (final Dronelink.KernelUnavailableException e) {
             Log.e(TAG, "Dronelink Kernel Unavailable");
         } catch (final Dronelink.UnregisteredException e) {
@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
 
         try {
             if ("Mission".equals(type)) {
-                Dronelink.getInstance().loadMission(executor.getExecutableSerialized(), Dronelink.getInstance().getSessionManager().getSession(), this, (final String error) -> {
+                Dronelink.getInstance().loadMission(executor.getExecutableSerialized(),this, (final String error) -> {
                     Log.e(TAG, "Unable to read mission: " + error);
                 });
             }
