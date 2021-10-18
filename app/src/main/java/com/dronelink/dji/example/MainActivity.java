@@ -28,8 +28,10 @@ import com.dronelink.core.Dronelink;
 import com.dronelink.core.FuncExecutor;
 import com.dronelink.core.MissionExecutor;
 import com.dronelink.core.ModeExecutor;
+import com.dronelink.core.User;
 import com.dronelink.core.command.CommandError;
 import com.dronelink.core.kernel.command.Command;
+import com.dronelink.core.kernel.core.CameraFocusCalibration;
 import com.dronelink.core.kernel.core.Descriptors;
 import com.dronelink.core.kernel.core.Message;
 import com.dronelink.core.ui.DronelinkUI;
@@ -160,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
 
     private void loadFunc() {
         try {
-            Dronelink.getInstance().loadFunc(loadAssetTextAsString("focus-distance-test.dronelink"), this, (final String error) -> { Log.e(TAG, "Unable to read function: " + error); });
+            Dronelink.getInstance().loadFunc(loadAssetTextAsString("func.dronelink"), this, (final String error) -> { Log.e(TAG, "Unable to read function: " + error); });
         } catch (final Dronelink.KernelUnavailableException e) {
             Log.e(TAG, "Dronelink Kernel Unavailable");
         } catch (final Dronelink.UnregisteredException e) {
@@ -271,6 +273,9 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
         //get asset manifest using: executor.getAssetManifestSerialized()
         //load mission later using Dronelink.getInstance().loadMission(...
     }
+
+    @Override
+    public void onMissionUpdatedDisconnected(final MissionExecutor executor, final MissionExecutor.Engagement engagement) {}
 
     @Override
     public void onFuncInputsChanged(final FuncExecutor executor) {}
