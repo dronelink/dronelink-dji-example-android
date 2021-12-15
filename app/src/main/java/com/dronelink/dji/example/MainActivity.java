@@ -28,10 +28,8 @@ import com.dronelink.core.Dronelink;
 import com.dronelink.core.FuncExecutor;
 import com.dronelink.core.MissionExecutor;
 import com.dronelink.core.ModeExecutor;
-import com.dronelink.core.User;
 import com.dronelink.core.command.CommandError;
 import com.dronelink.core.kernel.command.Command;
-import com.dronelink.core.kernel.core.CameraFocusCalibration;
 import com.dronelink.core.kernel.core.Descriptors;
 import com.dronelink.core.kernel.core.Message;
 import com.dronelink.core.ui.DronelinkUI;
@@ -248,6 +246,9 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
         assetManifest.addCameraFile(assetIndex, file);
         //assetManifest.getSerialized() to get the manually tracked asset manifest json
     }
+
+    @Override
+    public void onVideoFeedSourceUpdated(final DroneSession session, final Integer channel) {}
 
     @Override
     public void onMissionEstimating(final MissionExecutor executor) {}

@@ -91,6 +91,8 @@
 
 -keep class org.greenrobot.eventbus.**{*;}
 
+-keep class it.sauronsoftware.ftp4j.**{*;}
+
 -keepclasseswithmembers,allowshrinking class * {
     native <methods>;
 }
@@ -112,9 +114,8 @@
 -keep class androidx.** { *; }
 -keep class android.media.** { *; }
 -keep class okio.** { *; }
--keep class com.lmax.disruptor.** {
-    *;
-}
+-keep class com.lmax.disruptor.** { *; }
+-keep class com.qx.wz.dj.rtcm.* { *; }
 
 -dontwarn com.mapbox.services.android.location.LostLocationEngine
 -dontwarn com.mapbox.services.android.location.MockLocationEngine
@@ -144,6 +145,8 @@
 -keepclassmembers class android.arch.** { *; }
 -keep class android.arch.** { *; }
 -dontwarn android.arch.**
+
+-keep class org.apache.commons.** {*;}
 
 
 #<------------ utmiss config start------------>
