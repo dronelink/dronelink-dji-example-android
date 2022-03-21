@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
 
     <uses-feature
         android:name="android.hardware.usb.host"
@@ -35,7 +36,7 @@
         <meta-data
             android:name="com.dji.sdk.API_KEY"
             android:value="INSERT_YOUR_DJISDK_APP_KEY_HERE" />
-        <activity android:name="com.dronelink.dji.example.MainActivity">
+        <activity android:name="com.dronelink.dji.example.MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -52,6 +53,13 @@
         <activity android:name="com.dronelink.dji.ui.DJIDashboardActivity"
             android:screenOrientation="sensorLandscape">
         </activity>
+        <!--
+            TODO remove this when they update to Android 31
+            https://stackoverflow.com/questions/69287478/androidexported-added-but-still-getting-error-apps-targeting-android-12-and-hig
+        -->
+        <service
+            android:name="com.mapzen.android.lost.internal.GeofencingIntentService"
+            android:exported="true"
+            tools:node="merge" />
     </application>
-
 </manifest>

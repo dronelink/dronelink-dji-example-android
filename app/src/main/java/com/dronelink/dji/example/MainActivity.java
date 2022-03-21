@@ -9,6 +9,7 @@ package com.dronelink.dji.example;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.NonNull;
@@ -30,6 +31,7 @@ import com.dronelink.core.MissionExecutor;
 import com.dronelink.core.ModeExecutor;
 import com.dronelink.core.command.CommandError;
 import com.dronelink.core.kernel.command.Command;
+import com.dronelink.core.kernel.core.CameraFocusCalibration;
 import com.dronelink.core.kernel.core.Descriptors;
 import com.dronelink.core.kernel.core.Message;
 import com.dronelink.core.ui.DronelinkUI;
@@ -44,29 +46,37 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements DroneSessionManager.Listener, DroneSession.Listener, MissionExecutor.Listener, FuncExecutor.Listener, ModeExecutor.Listener {
+public class MainActivity extends AppCompatActivity implements Dronelink.Listener, DroneSessionManager.Listener, DroneSession.Listener, MissionExecutor.Listener, FuncExecutor.Listener, ModeExecutor.Listener {
     private static final String TAG = MainActivity.class.getCanonicalName();
 
-    private static final String[] REQUIRED_PERMISSION_LIST = new String[]{
-            Manifest.permission.VIBRATE,
-            Manifest.permission.INTERNET,
-            Manifest.permission.ACCESS_WIFI_STATE,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_NETWORK_STATE,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_PHONE_STATE
-    };
+    private static List<String> getRequiredPermissionList() {
+        final List<String> requiredPermissionList = new ArrayList<>();
+        requiredPermissionList.add(Manifest.permission.BLUETOOTH);
+        requiredPermissionList.add(Manifest.permission.BLUETOOTH_ADMIN);
+        requiredPermissionList.add(Manifest.permission.INTERNET);
+        requiredPermissionList.add(Manifest.permission.ACCESS_WIFI_STATE);
+        requiredPermissionList.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        requiredPermissionList.add(Manifest.permission.ACCESS_NETWORK_STATE);
+        requiredPermissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        requiredPermissionList.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        requiredPermissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        requiredPermissionList.add(Manifest.permission.READ_PHONE_STATE);
 
-    private class RequestCodes {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            requiredPermissionList.add(Manifest.permission.BLUETOOTH_SCAN);
+        }
+
+        return requiredPermissionList;
+    }
+
+    private static class RequestCodes {
         private static final int REQUEST_PERMISSION = 1;
         private static final int DASHBOARD = 2;
     }
 
     private static String MAP_CREDENTIALS_KEY = "INSERT YOUR CREDENTIALS KEY HERE";
 
-    private List<String> missingPermission = new ArrayList<>();
+    private final List<String> missingPermission = new ArrayList<>();
 
     private AssetManifest assetManifest;
     private int assetIndex;
@@ -104,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
     }
 
     private void checkAndRequestPermissions() {
-        for (String eachPermission : REQUIRED_PERMISSION_LIST) {
+        for (String eachPermission : getRequiredPermissionList()) {
             if (ContextCompat.checkSelfPermission(this, eachPermission) != PackageManager.PERMISSION_GRANTED) {
                 missingPermission.add(eachPermission);
             }
@@ -135,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
             ((DJIDroneSessionManager)Dronelink.getInstance().getSessionManager()).register(getApplicationContext());
         }
         else {
-            showToast("Please check if the permission is granted.");
+            showToast("Please check if the permission is granted: " + missingPermission.get(0));
         }
     }
 
@@ -213,6 +223,33 @@ public class MainActivity extends AppCompatActivity implements DroneSessionManag
 
         return null;
     }
+
+    @Override
+    public void onRegistered(final String error) {}
+
+    @Override
+    public void onMissionLoaded(final MissionExecutor executor) {}
+
+    @Override
+    public void onMissionUnloaded(final MissionExecutor executor) {}
+
+    @Override
+    public void onFuncLoaded(final FuncExecutor executor) {}
+
+    @Override
+    public void onFuncUnloaded(final FuncExecutor executor) {}
+
+    @Override
+    public void onModeLoaded(final ModeExecutor executor) {}
+
+    @Override
+    public void onModeUnloaded(final ModeExecutor executor) {}
+
+    @Override
+    public void onCameraFocusCalibrationRequested(final CameraFocusCalibration value) {}
+
+    @Override
+    public void onCameraFocusCalibrationUpdated(final CameraFocusCalibration value) {}
 
     @Override
     public void onOpened(final DroneSession session) {
