@@ -29,6 +29,6 @@ public class MApplication extends Application {
         super.attachBaseContext(base);
         MultiDex.install(this);
         com.secneo.sdk.Helper.install(this);
-        Dronelink.initialize(base, new DJIDroneSessionManager(base));
+        Dronelink.initialize(base);
     }
 }

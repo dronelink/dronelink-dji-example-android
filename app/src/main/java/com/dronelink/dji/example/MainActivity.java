@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements Dronelink.Listene
         private static final int DASHBOARD = 2;
     }
 
-    private static String MAP_CREDENTIALS_KEY = "INSERT YOUR CREDENTIALS KEY HERE";
+    private static final String MAP_CREDENTIALS_KEY = "INSERT YOUR CREDENTIALS KEY HERE";
 
     private final List<String> missingPermission = new ArrayList<>();
 
@@ -85,13 +85,18 @@ public class MainActivity extends AppCompatActivity implements Dronelink.Listene
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        DronelinkUI.initialize(this);
+        Dronelink.getInstance().addListener(this);
+        Dronelink.getInstance().addDroneSessionManager(new DJIDroneSessionManager(getBaseContext()));
+
         checkAndRequestPermissions();
         setContentView(R.layout.activity_main);
 
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
-        DronelinkUI.initialize(this);
-        Dronelink.getInstance().getSessionManager().addListener(this);
+
+        //Dronelink.getInstance().identifyUser(new User("1234"));
         Dronelink.getInstance().register("INSERT YOUR ENVIRONMENT KEY HERE", null);
+
         try {
             //use Dronelink.KernelVersionTarget to see the minimum compatible kernel version that the current core supports
             Dronelink.getInstance().installKernel(loadAssetTextAsString("dronelink-kernel.js"));
@@ -121,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements Dronelink.Listene
         }
 
         if (missingPermission.isEmpty()) {
-            ((DJIDroneSessionManager)Dronelink.getInstance().getSessionManager()).register(getApplicationContext());
+            ((DJIDroneSessionManager)Dronelink.getInstance().getTargetDroneSessionManager()).register(getApplicationContext());
         }
         else {
             ActivityCompat.requestPermissions(this,
@@ -142,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements Dronelink.Listene
         }
 
         if (missingPermission.isEmpty()) {
-            ((DJIDroneSessionManager)Dronelink.getInstance().getSessionManager()).register(getApplicationContext());
+            ((DJIDroneSessionManager)Dronelink.getInstance().getTargetDroneSessionManager()).register(getApplicationContext());
         }
         else {
             showToast("Please check if the permission is granted: " + missingPermission.get(0));
@@ -226,6 +231,11 @@ public class MainActivity extends AppCompatActivity implements Dronelink.Listene
 
     @Override
     public void onRegistered(final String error) {}
+
+    @Override
+    public void onDroneSessionManagerAdded(final DroneSessionManager droneSessionManager) {
+        droneSessionManager.addListener(this);
+    }
 
     @Override
     public void onMissionLoaded(final MissionExecutor executor) {}
