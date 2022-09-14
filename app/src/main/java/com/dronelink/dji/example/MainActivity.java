@@ -9,6 +9,7 @@ package com.dronelink.dji.example;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.usb.UsbManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -39,12 +40,17 @@ import com.dronelink.dji.DJIDroneSessionManager;
 import com.dronelink.dji.ui.DJIDashboardActivity;
 import com.mapbox.mapboxsdk.Mapbox;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import dji.sdk.sdkmanager.DJISDKManager;
 
 public class MainActivity extends AppCompatActivity implements Dronelink.Listener, DroneSessionManager.Listener, DroneSession.Listener, MissionExecutor.Listener, FuncExecutor.Listener, ModeExecutor.Listener {
     private static final String TAG = MainActivity.class.getCanonicalName();
@@ -82,6 +88,19 @@ public class MainActivity extends AppCompatActivity implements Dronelink.Listene
     private int assetIndex;
 
     @Override
+    protected void onNewIntent(@NonNull Intent intent) {
+        //doesn't seem to work if the dashboard is open though :(
+        //https://github.com/dji-sdk/Mobile-SDK-Android/issues/479
+        final String action = intent.getAction();
+        if (UsbManager.ACTION_USB_ACCESSORY_ATTACHED.equals(action)) {
+            final Intent attachedIntent = new Intent();
+            attachedIntent.setAction(DJISDKManager.USB_ACCESSORY_ATTACHED);
+            sendBroadcast(attachedIntent);
+        }
+        super.onNewIntent(intent);
+    }
+
+    @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -100,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements Dronelink.Listene
         try {
             //use Dronelink.KernelVersionTarget to see the minimum compatible kernel version that the current core supports
             Dronelink.getInstance().installKernel(loadAssetTextAsString("dronelink-kernel.js"));
+            
             assetManifest = Dronelink.getInstance().createAssetManifest("example", new String[]{"tag1", "tag2"});
             final Descriptors descriptors = new Descriptors();
             descriptors.name = "name";
