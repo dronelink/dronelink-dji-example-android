@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements Dronelink.Listene
         private static final int DASHBOARD = 2;
     }
 
-    private static final String MAP_CREDENTIALS_KEY = "INSERT YOUR CREDENTIALS KEY HERE";
+    private static final String MAP_CREDENTIALS_KEY = "AgHlNxt3tWRxGfCZ_rC2FDpXKdt8IrQcPd1mX5TxjT4qvnp5dwf9EEF8R3F63sqC";
 
     private final List<String> missingPermission = new ArrayList<>();
 
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements Dronelink.Listene
         Mapbox.getInstance(this, getString(R.string.mapbox_access_token));
 
         //Dronelink.getInstance().identifyUser(new User("1234"));
-        Dronelink.getInstance().register("INSERT YOUR ENVIRONMENT KEY HERE", null);
+        Dronelink.getInstance().register("mYf4WVO0C7nqEuiJjnVv", null);
 
         try {
             //use Dronelink.KernelVersionTarget to see the minimum compatible kernel version that the current core supports
@@ -178,7 +178,17 @@ public class MainActivity extends AppCompatActivity implements Dronelink.Listene
         final Intent intent = new Intent(getBaseContext(), DJIDashboardActivity.class);
         intent.putExtra("mapCredentialsKey", MAP_CREDENTIALS_KEY);
         startActivityIfNeeded(intent, RequestCodes.DASHBOARD);
-        loadPlan();
+        final com.dronelink.core.command.Command.Finisher finished = new com.dronelink.core.command.Command.Finisher() {
+            @Override
+            public void execute(final CommandError error) {
+                Log.e("FIXME", error == null ? null : error.description);
+            }
+        };
+        final DroneSessionManager targetDroneSessionManager = Dronelink.getInstance().getTargetDroneSessionManager();
+        if (targetDroneSessionManager != null) {
+            targetDroneSessionManager.startRemoteControllerLinking(finished);
+        }
+        //loadPlan();
         //loadFunc();
         //loadMode();
     }

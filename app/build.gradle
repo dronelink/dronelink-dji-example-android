@@ -74,10 +74,10 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.annotation:annotation:1.4.0'
-    implementation 'com.github.dronelink:dronelink-core-android:4.0.0'
-    implementation 'com.github.dronelink:dronelink-core-ui-android:4.0.0'
-    implementation 'com.github.dronelink:dronelink-dji-android:4.0.0'
-    implementation 'com.github.dronelink:dronelink-dji-ui-android:4.0.0'
+    implementation project(':dronelink_core')
+    implementation project(':dronelink_core_ui')
+    implementation project(':dronelink_dji')
+    implementation project(':dronelink_dji_ui')
     implementation('com.dji:dji-sdk:4.16.2', {
         /**
          * Uncomment the "library-anti-distortion" if your app does not need Anti Distortion for Mavic 2 Pro and Mavic 2 Zoom.

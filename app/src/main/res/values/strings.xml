@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Dronelink DJI Example</string>
-    <string name="mapbox_access_token">INSERT_YOUR_MAPBOX_ACCESS_TOKEN_HERE</string>
+    <string name="mapbox_access_token">pk.eyJ1IjoiZHJvbmVsaW5rIiwiYSI6ImNqcHdvZm12NjE0bTQ0OXBjcHV2bGZmYWYifQ.zpJXSjHjzV_w2reksB6Q7A</string>
+    <string name="dji_sdk_app_key">df55c435542c5f2b9fc27558</string>
 </resources>
