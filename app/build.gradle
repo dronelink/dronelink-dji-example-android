@@ -5,14 +5,14 @@ repositories {
 }
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
     buildToolsVersion '30.0.3'
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "com.dronelink.dji.example"
         minSdkVersion 21
-        targetSdkVersion 32
+        targetSdkVersion 32 //can't go to 33 yet because READ_EXTERNAL_STORAGE and WRITE_EXTERNAL_STORAGE permissions don't work anymore - DJI SDK needs to be updated to support this
         versionCode 1
         versionName "4.1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -74,11 +74,11 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.annotation:annotation:1.5.0'
-    implementation 'com.github.dronelink:dronelink-core-android:4.1.0'
-    implementation 'com.github.dronelink:dronelink-core-ui-android:4.1.0'
-    implementation 'com.github.dronelink:dronelink-dji-android:4.1.0'
-    implementation 'com.github.dronelink:dronelink-dji-ui-android:4.1.0'
-    implementation('com.dji:dji-sdk:4.16.2', {
+    implementation 'com.github.dronelink:dronelink-core-android:4.2.0'
+    implementation 'com.github.dronelink:dronelink-core-ui-android:4.2.0'
+    implementation 'com.github.dronelink:dronelink-dji-android:4.2.0'
+    implementation 'com.github.dronelink:dronelink-dji-ui-android:4.2.0'
+    implementation('com.dji:dji-sdk:4.16.4', {
         /**
          * Uncomment the "library-anti-distortion" if your app does not need Anti Distortion for Mavic 2 Pro and Mavic 2 Zoom.
          * Uncomment the "fly-safe-database" if you need database for release, or we will download it when DJISDKManager.getInstance().registerApp
@@ -88,7 +88,7 @@ dependencies {
         exclude module: 'library-anti-distortion'
         exclude module: 'fly-safe-database'
     })
-    compileOnly 'com.dji:dji-sdk-provided:4.16.2'
+    compileOnly 'com.dji:dji-sdk-provided:4.16.4'
     implementation('com.dji:dji-uxsdk:4.16', {
         exclude group: 'com.google.android.gms'
         exclude module: 'dji-sdk'
